@@ -1,6 +1,11 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
+const game = {
+    gravity: 0.2
+}
+
+
 canvas.width = 1920/2
 canvas.height = 1080/2
 canvas.x = 0
@@ -33,6 +38,30 @@ addEventListener('keyup', ({code}) => {
 })
 
 
+class Platform {
+    constructor(x, y, w, h) {
+        this.x = x;
+        this.y = y - h;
+        this.w = w;
+        this.h = h;
+    }
+    
+    
+    draw(){
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(this.x, this.y, this.w, this.h)
+    }
+    
+    onStep(){
+        this.draw()
+    }
+    
+    
+    
+    
+}
+
+
 class Player {
     constructor(){
         this.x = 10
@@ -40,7 +69,7 @@ class Player {
         this.w = 50
         this.h = 50
         this.dx = 10;
-        this.dy = 10;
+        this.dy = 1;
         
     }
     
@@ -67,6 +96,7 @@ class Player {
     fall(){
         if (this.getBottom() < canvas.height){
             this.y += this.dy
+            this.dy += game.gravity;
         } else {
             this.setBottom(canvas.height)
         }
@@ -111,10 +141,12 @@ class Player {
 
     
 const player = new Player();
+const platform_1 = new Platform(0, canvas.height, 100, 30);
 function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.onStep()
+    platform_1.onStep()
 }
 animate()
 

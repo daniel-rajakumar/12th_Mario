@@ -43,8 +43,9 @@ class Helper {
         this.h = h
         this.dx = dx
         this.dy = dy
-
+        
         this.default = { x, y,  w, h, dx, dy }
+        console.log(this.default)
     }
     
     setLeft(val){ this.x = val }
@@ -80,14 +81,12 @@ class Player extends Helper {
     constructor(x, y, w, h, dx, dy){
         super(x, y, w, h, dx, dy)
         this.jumpHeight = 8
-        this.onAir = true
     }
     
     jump(){
-        console.log("isfallign: " + this.onAir)
+        // console.log("isfallign: " + this.onAir)
         if (!this.onGround) return
         this.onGround = false
-        // this.y -= 1
         this.dy *= -1
     }
     
@@ -95,8 +94,8 @@ class Player extends Helper {
         this.onGround = false
         
         platforms.forEach(platform => {
-            if (this.getBottom() + this.dy > platform.getTop()) {
-                if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
+            if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
+                if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
                     this.setBottom(platform.getTop())
                     this.dy = player.jumpHeight
                     this.onGround = true
@@ -122,27 +121,33 @@ class Player extends Helper {
         this.h = this.default.h
         this.dx = this.default.dx
         this.dy = this.default.dy
+        
+
+        platforms.forEach(platform => {
+            platform.x = platform.default.x
+        })
+        
     }
     
     
     moveLeft(){
         // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
-        if (this.getLeft() > canvas.x){
+        if (this.getLeft() > canvas.width * 0.1){
             this.x -= this.dx
             // this.dx += 1
         } else {
-            this.setLeft(canvas.x)
+            platforms.forEach(platform => platform.x += this.dx )
         }
         
     }
     
     moveRight(){
         // console.log(`player: ${this.getRight()} | canvas : ${canvas.width}`)
-        if (this.getRight() < canvas.width){
+        if (this.getRight() < canvas.width * 0.5){
             this.x += this.dx
             // this.dx += 1
         } else {
-            this.setRight(canvas.width)
+            platforms.forEach(platform => platform.x -= this.dx )
         }
     }
     
@@ -151,8 +156,8 @@ class Player extends Helper {
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
     
-    action(){
-        keyPressed.forEach((value, key) => {
+    keyPress(){
+        keyPressed.forEach((_, key) => {
             switch (key) {
                 case "ArrowUp": ArrowUp(); break
                 case "ArrowLeft": ArrowLeft(); break
@@ -162,22 +167,30 @@ class Player extends Helper {
     }
 
     onStep(){
-        this.action()
+        this.keyPress()
         this.fall()
         this.draw()
     }
 }
 
 
+function createMap(){
+    platforms.push(createPlatform(0, 0, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 150, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 50, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 0, 300, 50))
+}
 
 
 
 function createPlatform(x_fromLeft, y_fromBottom, w, h){
     const platform = new Platform(0, 0, w, h)
     
-    
     platform.setLeft(x_fromLeft)
-    platform.setBottom(y_fromBottom)
+    platform.setBottom(canvas.height - y_fromBottom)
+    
+    platform.default.x = platform.x
+    platform.default.y = platform.y
     
     return platform;
 }
@@ -185,10 +198,9 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 
     
 const player = new Player(20, 20, 50, 50, 10, 10);
-const platforms = [
-    createPlatform(0, canvas.height, 350, 30),
-    createPlatform(500, canvas.height - 100, 250, 30)
-]
+const platforms = []
+
+createMap()
 function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)

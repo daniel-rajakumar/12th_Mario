@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 const game = {
-    gravity: 0.1
+    gravity: 0.2
 }
 
 
@@ -44,16 +44,7 @@ class Helper {
         this.dx = dx
         this.dy = dy
 
-        this.default = {
-            x : x,
-            y : y,
-            w : w,
-            h : h,
-            dx: dx,
-            dy: dy
-        }
-        
-        
+        this.default = { x, y,  w, h, dx, dy }
     }
     
     setLeft(val){ this.x = val }
@@ -86,8 +77,8 @@ class Platform extends Helper {
 
 class Player extends Helper {
     
-    constructor(x, y, w, h, xy, dy){
-        super(x, y, w, h, xy, dy)
+    constructor(x, y, w, h, dx, dy){
+        super(x, y, w, h, dx, dy)
         this.jumpHeight = 8
         this.onAir = true
     }
@@ -104,13 +95,12 @@ class Player extends Helper {
         this.onGround = false
         
         platforms.forEach(platform => {
-            if (this.getBottom() + this.dy > platform.getTop()){
+            if (this.getBottom() + this.dy > platform.getTop()) {
                 if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
                     this.setBottom(platform.getTop())
                     this.dy = player.jumpHeight
                     this.onGround = true
                 }
-                
             }
         })
         
@@ -188,7 +178,6 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
     
     platform.setLeft(x_fromLeft)
     platform.setBottom(y_fromBottom)
-    
     
     return platform;
 }

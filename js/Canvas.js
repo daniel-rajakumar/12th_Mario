@@ -26,7 +26,7 @@ function ArrowLeft(){
 function ArrowUp(){
 }
 
-addEventListener('keypress', ({code}) => {
+addEventListener('keyup', ({code}) => {
     switch (code){
         
     }
@@ -37,17 +37,23 @@ class Player {
     constructor(){
         this.x = 10
         this.y = 10
-        this.w = 100
-        this.h = 100
+        this.w = 50
+        this.h = 50
         this.dx = 10;
-        this.dy = 0.1;
+        this.dy = 10;
         
     }
     
     setLeft(val){ this.x = val }
     setRight(val){ this.x = val - this.w }
+    setBottom(val){ this.y = val - this.h }
+    setTop(val){ this.y = val }
+    
+    
     getLeft(){ return this.x }
     getRight(){ return this.x + this.w }
+    getBottom(){ return this.y + this.h }
+    getTop(){ return this.y }
     
     updateVariables(){
         this.up = this.y
@@ -58,11 +64,19 @@ class Player {
         
     }
     
+    fall(){
+        if (this.getBottom() < canvas.height){
+            this.y += this.dy
+        } else {
+            this.setBottom(canvas.height)
+        }
+    }
+    
     moveLeft(){
         console.log(`player: ${this.x} | canvas : ${canvas.x}`)
         if (this.getLeft() > canvas.x){
             this.x -= this.dx
-            this.dx += 1
+            // this.dx += 1
         } else {
             this.setLeft(canvas.x)
         }
@@ -73,7 +87,7 @@ class Player {
         console.log(`player: ${this.getRight()} | canvas : ${canvas.width}`)
         if (this.getRight() < canvas.width){
             this.x += this.dx
-            this.dx += 1
+            // this.dx += 1
         } else {
             this.setRight(canvas.width)
         }
@@ -85,23 +99,22 @@ class Player {
     }
 
     onStep(){
-        this.y += this.dy
+        this.fall()
         this.draw()
         // this.updateVariables()
     }
 }
 
 
+
+
+
+    
 const player = new Player();
-console.log(player)
-player.draw()
-
-
-function animate(){
+function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.onStep()
 }
-
 animate()
 

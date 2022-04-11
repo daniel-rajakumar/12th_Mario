@@ -83,7 +83,7 @@ class Player extends Helper {
     jump(){
         if (this.isJumping) return
         this.isJumping = true
-        this.y -= 1
+        // this.y -= 1
         this.dy *= -1
     }
     
@@ -131,11 +131,21 @@ class Player extends Helper {
         ctx.fillStyle = 'red'
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
+    
+    action(){
+        keyPressed.forEach((value, key) => {
+            switch (key) {
+                case "ArrowUp": ArrowUp(); break
+                case "ArrowLeft": ArrowLeft(); break
+                case "ArrowRight": ArrowRight(); break
+            }
+        });
+    }
 
     onStep(){
+        this.action()
         this.fall()
         this.draw()
-        // this.updateVariables()
     }
 }
 
@@ -165,20 +175,8 @@ function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.onStep()
-    // console.log(keyPressed)
-   
-    console.log(keyPressed)
-    keyPressed.forEach((value, key) => {
-        switch (key){
-            case "ArrowUp": ArrowUp(); break
-            case "ArrowLeft": ArrowLeft(); break
-            case "ArrowRight": ArrowRight(); break
-        }
-    })
-
-    
-    
     platforms.forEach(platform => platform.onStep())
 }
+
 animate()
 

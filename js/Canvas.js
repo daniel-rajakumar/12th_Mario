@@ -43,6 +43,17 @@ class Helper {
         this.h = h
         this.dx = dx
         this.dy = dy
+
+        this.default = {
+            x : x,
+            y : y,
+            w : w,
+            h : h,
+            dx: dx,
+            dy: dy
+        }
+        
+        
     }
     
     setLeft(val){ this.x = val }
@@ -78,9 +89,11 @@ class Player extends Helper {
     constructor(x, y, w, h, xy, dy){
         super(x, y, w, h, xy, dy)
         this.jumpHeight = 8
+        this.isFalling = true
     }
     
     jump(){
+        console.log("isfallign: " + this.isFalling)
         if (this.isJumping) return
         this.isJumping = true
         // this.y -= 1
@@ -88,23 +101,41 @@ class Player extends Helper {
     }
     
     fall(){
-        if (this.getBottom() < canvas.height){
-            platforms.forEach(platforms => {
-                if (this.getBottom() + this.dy < platforms.getTop()) {
-                    this.y += this.dy
-                    this.dy += game.gravity;
-                }  else {
+        this.isFalling = true
+        
+        platforms.forEach(platform => {
+            if (this.getBottom() + this.dy > platform.getTop()){
+                if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
+                    this.setBottom(platform.getTop())
                     this.dy = player.jumpHeight
-                    this.setBottom(platforms.getTop())
                     this.isJumping = false
+                    this.isFalling = false
                 }
-            })
+                
+            }
+        })
+        
+        if (this.isFalling){
+            this.y += this.dy
+            this.dy += game.gravity;
             
-            // if (this.getBottom() < )
-        } else {
-            this.setBottom(canvas.height)
+            if (this.getTop() > canvas.height){
+                this.reset()
+            }
         }
+            
     }
+    
+    
+    reset(){
+        this.x = this.default.x
+        this.y = this.default.y
+        this.w = this.default.w
+        this.h = this.default.h
+        this.dx = this.default.dx
+        this.dy = this.default.dy
+    }
+    
     
     moveLeft(){
         // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
@@ -169,7 +200,7 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 const player = new Player(20, 20, 50, 50, 10, 10);
 const platforms = [
     createPlatform(0, canvas.height, 350, 30),
-    createPlatform(400, canvas.height, 250, 30)
+    createPlatform(500, canvas.height - 100, 250, 30)
 ]
 function animate() {
     requestAnimationFrame(animate)

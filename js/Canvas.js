@@ -11,13 +11,10 @@ canvas.height = 1080/2
 canvas.x = 0
 canvas.y = 0
 
-addEventListener('keydown', ({code}) => {
-    console.log(code)
-    // switch (code){
-    //     case "ArrowUp": ArrowUp(); break
-    //     case "ArrowLeft": ArrowLeft(); break
-    //     case "ArrowRight": ArrowRight(); break
-    // }
+
+let keyPressed = new Map()
+addEventListener('keydown', (e) => {
+    keyPressed.set(e.code, 'true')
 })
 
 function ArrowRight(){
@@ -32,10 +29,9 @@ function ArrowUp(){
     player.jump()
 }
 
-addEventListener('keyup', ({code}) => {
-    switch (code){
-        
-    }
+addEventListener('keyup', (e) => {
+    // delete keyPressed[e.code] 
+    keyPressed.delete(e.code)
 })
 
 
@@ -85,7 +81,8 @@ class Player extends Helper {
     }
     
     jump(){
-        console.log(this.dy)
+        if (this.isJumping) return
+        this.isJumping = true
         this.y -= 1
         this.dy *= -1
     }
@@ -99,6 +96,7 @@ class Player extends Helper {
                 }  else {
                     this.dy = player.jumpHeight
                     this.setBottom(platforms.getTop())
+                    this.isJumping = false
                 }
             })
             
@@ -167,6 +165,18 @@ function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.onStep()
+    // console.log(keyPressed)
+   
+    console.log(keyPressed)
+    keyPressed.forEach((value, key) => {
+        switch (key){
+            case "ArrowUp": ArrowUp(); break
+            case "ArrowLeft": ArrowLeft(); break
+            case "ArrowRight": ArrowRight(); break
+        }
+    })
+
+    
     
     platforms.forEach(platform => platform.onStep())
 }

@@ -89,33 +89,32 @@ class Player extends Helper {
     constructor(x, y, w, h, xy, dy){
         super(x, y, w, h, xy, dy)
         this.jumpHeight = 8
-        this.isFalling = true
+        this.onAir = true
     }
     
     jump(){
-        console.log("isfallign: " + this.isFalling)
-        if (this.isJumping) return
-        this.isJumping = true
+        console.log("isfallign: " + this.onAir)
+        if (!this.onGround) return
+        this.onGround = false
         // this.y -= 1
         this.dy *= -1
     }
     
     fall(){
-        this.isFalling = true
+        this.onGround = false
         
         platforms.forEach(platform => {
             if (this.getBottom() + this.dy > platform.getTop()){
                 if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
                     this.setBottom(platform.getTop())
                     this.dy = player.jumpHeight
-                    this.isJumping = false
-                    this.isFalling = false
+                    this.onGround = true
                 }
                 
             }
         })
         
-        if (this.isFalling){
+        if (!this.onGround){
             this.y += this.dy
             this.dy += game.gravity;
             
@@ -123,7 +122,6 @@ class Player extends Helper {
                 this.reset()
             }
         }
-            
     }
     
     

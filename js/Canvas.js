@@ -168,12 +168,18 @@ class Player extends Helper {
         
         platforms.forEach(platform => {
             if (this.getBottom() > platform.getTop() && this.getTop() < platform.getBottom()) {
-                this.canMoveRight = !(Math.abs(this.getRight() - platform.getLeft()) < this.dx)
-                this.canMoveLeft = !(Math.abs(this.getLeft() - platform.getRight()) < this.dx)
+                if (Math.abs(this.getLeft() - platform.getRight()) < this.dx){
+                    this.canMoveLeft = false
+                }
+                if (Math.abs(this.getRight() - platform.getLeft()) < this.dx){ 
+                    this.canMoveRight = false 
+                }
             }
-
+            
             if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()) {
-                this.canMoveUp = !(Math.abs(this.getTop() - platform.getBottom()) < 5)
+                if ((Math.abs(this.getTop() - platform.getBottom()) < 5)){
+                    this.canMoveUp = false;
+                }
             }
         });
     }
@@ -205,9 +211,9 @@ class Player extends Helper {
 
 function createMap(){
     platforms.push(createPlatform(0, 0, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 225, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 0, 3000, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() -2600, 75, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 225, 600, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 300, 0, 3000, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() -2600, 145, 300, 50))
 }
 
 

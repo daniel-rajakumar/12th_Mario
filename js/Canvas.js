@@ -89,12 +89,10 @@ class Player extends Helper {
         // console.log("isfallign: " + this.onAir)
         if (this.canMoveDown) return
         this.canMoveDown = true
-        this.dy *= -1
+        this.dy = -player.jumpHeight
     }
     
     fall(){
-        this.onGround = false
-        
         if (!this.canMoveUp){
             this.dy *= -1;
         }
@@ -102,7 +100,7 @@ class Player extends Helper {
         if (this.canMoveDown){
             this.y += this.dy
             this.dy += game.gravity;
-            
+
             if (this.getTop() > canvas.height){
                 this.reset()
             }
@@ -133,7 +131,7 @@ class Player extends Helper {
                 this.x -= this.dx
                 // this.dx += 1
             } else {
-                platforms.forEach(platform => platform.x += this.dx )
+                platforms.forEach(platform => platform.x += this.dx)
             }
         }
         
@@ -162,7 +160,7 @@ class Player extends Helper {
                 if (Math.abs(this.getLeft() - platform.getRight()) < this.dx){
                     this.canMoveLeft = false
                 }
-                if (Math.abs(this.getRight() - platform.getLeft()) < this.dx){ 
+                if (Math.abs(this.getRight() - platform.getLeft()) < this.dx){
                     this.canMoveRight = false 
                 }
             }
@@ -173,8 +171,7 @@ class Player extends Helper {
                 }
 
                 if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
-                    this.setBottom(platform.getTop())
-                    this.dy = player.jumpHeight
+                    // this.setBottom(platform.getTop())
                     this.canMoveDown = false
                 }
             }
@@ -211,13 +208,13 @@ function createMap(){
     platforms.push(createPlatform(0, 0, 300, 50))
     platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 225, 600, 50))
     platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 300, 0, 3000, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() -2600, 145, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() -2600, 145, 300, 200))
 }
 
 
 
 function createPlatform(x_fromLeft, y_fromBottom, w, h){
-    const platform = new Platform(0, 0, w, h)
+    const platform = new Platform(null, null, w, h)
     
     platform.setLeft(x_fromLeft)
     platform.setBottom(canvas.height - y_fromBottom)

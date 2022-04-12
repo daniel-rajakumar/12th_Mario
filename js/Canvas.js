@@ -99,6 +99,7 @@ class Player extends Helper {
         
         if (this.canMoveDown){
             this.y += this.dy
+            
             this.dy += game.gravity;
 
             if (this.getTop() > canvas.height){
@@ -155,7 +156,7 @@ class Player extends Helper {
         this.canMoveDown = true
         
         
-        platforms.forEach(platform => {
+        platforms.forEach((platform, index) => {
             if (this.getBottom() > platform.getTop() && this.getTop() < platform.getBottom()) {
                 if (Math.abs(this.getLeft() - platform.getRight()) < this.dx){
                     this.canMoveLeft = false
@@ -170,12 +171,13 @@ class Player extends Helper {
                     this.canMoveUp = false;
                 }
 
-                if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
-                    // this.setBottom(platform.getTop())
+                if (this.getBottom() >= platform.getTop() && this.getTop() < platform.getBottom()) {
+                    this.setBottom(platform.getTop())
                     this.canMoveDown = false
                 }
             }
         });
+        
         
     }
 

@@ -13,8 +13,8 @@ canvas.y = 0
 
 
 let keyPressed = new Map()
-addEventListener('keydown', (e) => {
-    keyPressed.set(e.code, 'true')
+addEventListener('keydown', ({code}) => {
+    keyPressed.set(code, 'true')
 })
 
 function ArrowRight(){
@@ -81,8 +81,8 @@ class Player extends Helper {
     constructor(x, y, w, h, dx, dy){
         super(x, y, w, h, dx, dy)
         this.jumpHeight = 8
-        // this.canMoveRight = true;
-        // this.canMoveLeft = true;
+        this.frameX = 0
+        this.frameY = 0
     }
     
     jump(){
@@ -184,8 +184,8 @@ class Player extends Helper {
 
     draw(){
         let image = new Image();
-        image.src = "./img/mario.png"
-        ctx.drawImage(image, this.x, this.y, this.w, this.h)
+        image.src = "./img//inkscape/drawing.svg"
+        ctx.drawImage(image, Math.floor(this.frameX) * 96, Math.floor(this.frameY) * 96, 96, 96, this.x, this.y, this.w, this.h)
         // ctx.fillStyle = 'red'
         // ctx.fillRect(this.x, this.y, this.w, this.h)
     }
@@ -199,8 +199,14 @@ class Player extends Helper {
             }
         });
     }
+    
+    loopSprite(){
+        this.frameX += 0.1
+        this.frameX %= 2
+    }
 
     onStep(){
+        this.loopSprite()
         this.checkMovementArea()
         this.keyPress()
         this.fall()
@@ -232,7 +238,7 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 
 
     
-const player = new Player(20, 20, 200, 50, 10, 10);
+const player = new Player(20, 20, 500, 500, 10, 10);
 const platforms = []
 
 createMap()

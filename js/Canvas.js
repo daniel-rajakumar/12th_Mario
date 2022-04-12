@@ -81,6 +81,8 @@ class Player extends Helper {
     constructor(x, y, w, h, dx, dy){
         super(x, y, w, h, dx, dy)
         this.jumpHeight = 8
+        // this.canMoveRight = true;
+        // this.canMoveLeft = true;
     }
     
     jump(){
@@ -132,24 +134,47 @@ class Player extends Helper {
     
     moveLeft(){
         // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
-        if (this.getLeft() > canvas.width * 0.1){
-            this.x -= this.dx
-            // this.dx += 1
-        } else {
-            platforms.forEach(platform => platform.x += this.dx )
+        if (this.canMoveLeft){
+            if (this.getLeft() > canvas.width * 0.1){
+                this.x -= this.dx
+                // this.dx += 1
+            } else {
+                platforms.forEach(platform => platform.x += this.dx )
+            }
         }
         
     }
     
     moveRight(){
-        // console.log(`player: ${this.getRight()} | canvas : ${canvas.width}`)
-        if (this.getRight() < canvas.width * 0.5){
-            this.x += this.dx
-            // this.dx += 1
-        } else {
-            platforms.forEach(platform => platform.x -= this.dx )
+        if (this.canMoveRight) {
+            if (this.getRight() < canvas.width * 0.5) {
+                this.x += this.dx
+                // this.dx += 1
+            } else {
+                platforms.forEach(platform => platform.x -= this.dx)
+            }
         }
     }
+
+    checkMovementArea(){
+        this.canMoveLeft = true
+        this.canMoveRight = true
+        
+        
+        platforms.forEach(platform => {
+            if (platform.getTop() < this.getBottom()) {
+                if (Math.abs(this.getRight() - platform.getLeft()) < this.dx) {
+                    this.canMoveRight = false;
+                }
+
+                if (Math.abs(this.getLeft() - platform.getRight()) < this.dx) {
+                    this.canMoveLeft = false;
+                }
+            }
+            // console.log(this.canMoveLeft)
+        });
+    }
+    
     
     draw(){
         ctx.fillStyle = 'red'
@@ -167,6 +192,7 @@ class Player extends Helper {
     }
 
     onStep(){
+        this.checkMovementArea()
         this.keyPress()
         this.fall()
         this.draw()
@@ -176,8 +202,8 @@ class Player extends Helper {
 
 function createMap(){
     platforms.push(createPlatform(0, 0, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 150, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 50, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 75, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 0, 300, 50))
     platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 0, 300, 50))
 }
 

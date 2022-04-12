@@ -49,9 +49,9 @@ class Helper {
     }
     
     setLeft(val){ this.x = val }
-    setRight(val){ this.x = val - this.w }
+    // setRight(val){ this.x = val - this.w }
     setBottom(val){ this.y = val - this.h }
-    setTop(val){ this.y = val }
+    // setTop(val){ this.y = val }
 
     getLeft(){ return this.x }
     getRight(){ return this.x + this.w }
@@ -156,7 +156,7 @@ class Player extends Helper {
         this.canMoveDown = true
         
         
-        platforms.forEach((platform, index) => {
+        platforms.forEach(platform => {
             if (this.getBottom() > platform.getTop() && this.getTop() < platform.getBottom()) {
                 if (Math.abs(this.getLeft() - platform.getRight()) < this.dx){
                     this.canMoveLeft = false

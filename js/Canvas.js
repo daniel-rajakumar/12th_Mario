@@ -87,8 +87,8 @@ class Player extends Helper {
     
     jump(){
         // console.log("isfallign: " + this.onAir)
-        if (!this.onGround) return
-        this.onGround = false
+        if (this.canMoveDown) return
+        this.canMoveDown = true
         this.dy *= -1
     }
     
@@ -99,17 +99,7 @@ class Player extends Helper {
             this.dy *= -1;
         }
         
-        platforms.forEach(platform => {
-            if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
-                if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
-                    this.setBottom(platform.getTop())
-                    this.dy = player.jumpHeight
-                    this.onGround = true
-                }
-            }
-        })
-        
-        if (!this.onGround){
+        if (this.canMoveDown){
             this.y += this.dy
             this.dy += game.gravity;
             
@@ -164,6 +154,7 @@ class Player extends Helper {
         this.canMoveLeft = true
         this.canMoveRight = true
         this.canMoveUp = true
+        this.canMoveDown = true
         
         
         platforms.forEach(platform => {
@@ -180,11 +171,18 @@ class Player extends Helper {
                 if ((Math.abs(this.getTop() - platform.getBottom()) < 5)){
                     this.canMoveUp = false;
                 }
+
+                if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
+                    this.setBottom(platform.getTop())
+                    this.dy = player.jumpHeight
+                    this.canMoveDown = false
+                }
             }
         });
+        
     }
-    
-    
+
+
     draw(){
         ctx.fillStyle = 'red'
         ctx.fillRect(this.x, this.y, this.w, this.h)

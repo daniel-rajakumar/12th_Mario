@@ -171,7 +171,10 @@ class Player extends Helper {
                     this.canMoveLeft = false;
                 }
             }
-            // console.log(this.canMoveLeft)
+            
+            // if (platform.getTop() < this.getBottom()){
+            //     console.log(this.canMoveLeft)
+            // }
         });
     }
     
@@ -202,9 +205,9 @@ class Player extends Helper {
 
 function createMap(){
     platforms.push(createPlatform(0, 0, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 75, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 0, 300, 50))
-    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() + 100, 0, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 125, 300, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() - 100, 0, 3000, 50))
+    platforms.push(createPlatform(platforms.slice(-1).pop().getRight() -2600, 100, 300, 50))
 }
 
 

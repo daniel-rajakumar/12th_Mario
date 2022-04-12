@@ -95,6 +95,10 @@ class Player extends Helper {
     fall(){
         this.onGround = false
         
+        if (this.canMoveUp){
+            this.dy *= -1;
+        }
+        
         platforms.forEach(platform => {
             if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
                 if (this.getBottom() + this.dy > platform.getTop() && this.getTop() < platform.getBottom()) {
@@ -159,11 +163,11 @@ class Player extends Helper {
     checkMovementArea(){
         this.canMoveLeft = true
         this.canMoveRight = true
+        this.canMoveUp = false
         
         
         platforms.forEach(platform => {
-            if (this.getBottom() > platform.getTop()
-            && this.getTop() < platform.getBottom()) {
+            if (this.getBottom() > platform.getTop() && this.getTop() < platform.getBottom()) {
                 if (Math.abs(this.getRight() - platform.getLeft()) < this.dx) {
                     this.canMoveRight = false;
                 }
@@ -173,16 +177,12 @@ class Player extends Helper {
                 }
                 
             }
+            
             if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()){
-                if (Math.abs(this.getTop() - platform.getBottom()) < 10 ) {
-                    this.y = this.getBottom()
-                    this.dy *= 1
+                if (Math.abs(this.getTop() - platform.getBottom()) < 5 ) {
+                    this.canMoveUp = true
                 }
             }
-
-            // if (platform.getTop() < this.getBottom()){
-            //     console.log(this.canMoveLeft)
-            // }
         });
     }
     

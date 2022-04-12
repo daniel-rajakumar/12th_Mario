@@ -183,8 +183,11 @@ class Player extends Helper {
 
 
     draw(){
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.x, this.y, this.w, this.h)
+        let image = new Image();
+        image.src = "./img/mario.png"
+        ctx.drawImage(image, this.x, this.y, this.w, this.h)
+        // ctx.fillStyle = 'red'
+        // ctx.fillRect(this.x, this.y, this.w, this.h)
     }
     
     keyPress(){
@@ -229,7 +232,7 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 
 
     
-const player = new Player(20, 20, 50, 50, 10, 10);
+const player = new Player(20, 20, 200, 50, 10, 10);
 const platforms = []
 
 createMap()

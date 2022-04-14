@@ -65,7 +65,7 @@ class Platform extends Helper {
     }
 
     draw(){
-        ctx.fillStyle = 'blue'
+        ctx.fillStyle = 'black'
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
     
@@ -128,6 +128,7 @@ class Player extends Helper {
     moveLeft(){
         // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
         if (this.canMoveLeft){
+            this.image = "./img/run_left.png"
             if (this.getLeft() > canvas.width * 0.1){
                 this.x -= this.dx
                 // this.dx += 1
@@ -140,6 +141,7 @@ class Player extends Helper {
     
     moveRight(){
         if (this.canMoveRight) {
+            this.image = "./img/run_right.png"
             if (this.getRight() < canvas.width * 0.5) {
                 this.x += this.dx
                 // this.dx += 1
@@ -154,6 +156,10 @@ class Player extends Helper {
         this.canMoveRight = true
         this.canMoveUp = true
         this.canMoveDown = true
+        let crop = {
+            bottom: 20,
+            right: 20
+        }
         
         
         platforms.forEach(platform => {
@@ -166,26 +172,29 @@ class Player extends Helper {
                 }
             }
             
-            if (this.getRight() > platform.getLeft() && this.getLeft() < platform.getRight()) {
+            if ((this.getRight() - this.w/3) > platform.getLeft() && (this.getLeft() + this.w/3) < platform.getRight()) {
                 if ((Math.abs(this.getTop() - platform.getBottom()) < 5)){
                     this.canMoveUp = false;
                 }
 
-                if (this.getBottom() >= platform.getTop() && this.getTop() < platform.getBottom()) {
-                    this.setBottom(platform.getTop())
+                if ((this.getBottom() >= platform.getTop() + crop.bottom) && this.getTop() < platform.getBottom()) {
+                    this.setBottom(platform.getTop() + crop.bottom)
                     this.canMoveDown = false
                 }
             }
         });
-        
         
     }
 
 
     draw(){
         let image = new Image();
-        image.src = "./img//inkscape/drawing.svg"
-        ctx.drawImage(image, Math.floor(this.frameX) * 96, Math.floor(this.frameY) * 96, 96, 96, this.x, this.y, this.w, this.h)
+        image.src = this.image
+        let size = {
+            w: 794,
+            h: 1123
+        }
+        ctx.drawImage(image, Math.floor(this.frameX) * size.w, (Math.floor(this.frameY) * size.h), (size.w - 50), size.h, this.x, this.y, this.w, this.h)
         // ctx.fillStyle = 'red'
         // ctx.fillRect(this.x, this.y, this.w, this.h)
     }
@@ -201,8 +210,8 @@ class Player extends Helper {
     }
     
     loopSprite(){
-        this.frameX += 0.1
-        this.frameX %= 2
+        this.frameX += 0.5
+        this.frameX %= 60
     }
 
     onStep(){
@@ -238,7 +247,7 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 
 
     
-const player = new Player(20, 20, 500, 500, 10, 10);
+const player = new Player(20, 20, 150, 150, 10, 10);
 const platforms = []
 
 createMap()

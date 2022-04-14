@@ -83,7 +83,7 @@ class Player extends Helper {
         this.jumpHeight = 8
         this.frameX = 0
         this.frameY = 0
-        this.prevMoveDir = ''
+        this.image = "./img/stand_right.png"
     }
     
     jump(){
@@ -220,7 +220,7 @@ class Player extends Helper {
     }
     
     loopSprite(){
-        this.frameX += 0.5
+        this.frameX += 0.75
         this.frameX %= 60
     }
 

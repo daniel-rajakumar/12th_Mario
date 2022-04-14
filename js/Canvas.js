@@ -13,6 +13,12 @@ canvas.y = 0
 
 
 let keyPressed = new Map()
+
+addEventListener('keypress', ({code}) => {
+    console.log(code)
+})
+
+
 addEventListener('keydown', ({code}) => {
     keyPressed.set(code, 'true')
 })
@@ -29,9 +35,9 @@ function ArrowUp(){
     player.jump()
 }
 
-addEventListener('keyup', (e) => {
+addEventListener('keyup', ({code}) => {
     // delete keyPressed[e.code] 
-    keyPressed.delete(e.code)
+    keyPressed.delete(code)
 })
 
 
@@ -84,6 +90,7 @@ class Player extends Helper {
         this.frameX = 0
         this.frameY = 0
         this.image = "./img/stand_right.png"
+        this.count = 0
     }
     
     jump(){
@@ -191,7 +198,9 @@ class Player extends Helper {
 
 
     draw(){
+        this.count++
         let image = new Image();
+        // console.log(`${this.count} + ${this.image}`)
         image.src = this.image
         let size = {
             w: 794,
@@ -260,6 +269,11 @@ function createPlatform(x_fromLeft, y_fromBottom, w, h){
 const player = new Player(20, 20, 150, 150, 10, 10);
 const platforms = []
 
+setInterval(function(){
+    //code goes here that will be run every 5 seconds.    
+    console.log()
+}, 1000);
+
 createMap()
 function animate() {
     requestAnimationFrame(animate)
@@ -269,4 +283,5 @@ function animate() {
 }
 
 animate()
+
 

@@ -83,6 +83,7 @@ class Player extends Helper {
         this.jumpHeight = 8
         this.frameX = 0
         this.frameY = 0
+        this.prevMoveDir = ''
     }
     
     jump(){
@@ -128,6 +129,7 @@ class Player extends Helper {
     moveLeft(){
         // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
         if (this.canMoveLeft){
+            this.prevMoveDir = 'left'
             this.image = "./img/run_left.png"
             if (this.getLeft() > canvas.width * 0.1){
                 this.x -= this.dx
@@ -141,6 +143,7 @@ class Player extends Helper {
     
     moveRight(){
         if (this.canMoveRight) {
+            this.prevMoveDir = 'right'
             this.image = "./img/run_right.png"
             if (this.getRight() < canvas.width * 0.5) {
                 this.x += this.dx
@@ -183,7 +186,7 @@ class Player extends Helper {
                 }
             }
         });
-        
+
     }
 
 
@@ -200,6 +203,12 @@ class Player extends Helper {
     }
     
     keyPress(){
+        if (this.prevMoveDir === 'left'){
+            this.image = "./img/stand_left.png"
+        } else if (this.prevMoveDir === 'right'){
+            this.image = "./img/stand_right.png"
+        }
+        
         keyPressed.forEach((_, key) => {
             switch (key) {
                 case "ArrowUp": ArrowUp(); break
@@ -207,6 +216,7 @@ class Player extends Helper {
                 case "ArrowRight": ArrowRight(); break
             }
         });
+        
     }
     
     loopSprite(){

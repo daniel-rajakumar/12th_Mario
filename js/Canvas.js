@@ -1,10 +1,10 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
+
 const game = {
     gravity: 0.2
 }
-
 
 canvas.width = 1920/2
 canvas.height = 1080/2
@@ -12,32 +12,33 @@ canvas.x = 0
 canvas.y = 0
 
 
-let keyPressed = new Map()
-
-addEventListener('keypress', ({code}) => {
-    console.log(code)
-})
-
+let keys = new Map 
 
 addEventListener('keydown', ({code}) => {
-    keyPressed.set(code, 'true')
+    // keys.set(code, keys.get(code) + 1)
+    // console.log(keys.has(code))
+    if (!keys.has(code))
+        keys.set(code, 0)
 })
 
 function ArrowRight(){
+    keys.set("ArrowRight", keys.get("ArrowRight") + 1)
     player.moveRight()
 }
 
 function ArrowLeft(){
+    keys.set("ArrowLeft", keys.get("ArrowLeft") + 1)
     player.moveLeft()
 }
 
 function ArrowUp(){
+    keys.set("ArrowUp", keys.get("ArrowUp") + 1)
     player.jump()
 }
 
 addEventListener('keyup', ({code}) => {
     // delete keyPressed[e.code] 
-    keyPressed.delete(code)
+    keys.delete(code)
 })
 
 
@@ -51,7 +52,6 @@ class Helper {
         this.dy = dy
         
         this.default = { x, y,  w, h, dx, dy }
-        // console.log(this.default)
     }
     
     setLeft(val){ this.x = val }
@@ -89,12 +89,12 @@ class Player extends Helper {
         this.jumpHeight = 8
         this.frameX = 0
         this.frameY = 0
-        this.image = "./img/stand_right.png"
+        this.image = new Image()
+        this.image.src = "./img/stand_right.png"
         this.count = 0
     }
     
     jump(){
-        // console.log("isfallign: " + this.onAir)
         if (this.canMoveDown) return
         this.canMoveDown = true
         this.dy = -player.jumpHeight
@@ -134,10 +134,10 @@ class Player extends Helper {
     
     
     moveLeft(){
-        // console.log(`player: ${this.x} | canvas : ${canvas.x}`)
         if (this.canMoveLeft){
             this.prevMoveDir = 'left'
-            this.image = "./img/run_left.png"
+            // if (keys.get("ArrowLeft") > 10)
+                this.image.src = "./img/run_left.png"
             if (this.getLeft() > canvas.width * 0.1){
                 this.x -= this.dx
                 // this.dx += 1
@@ -151,7 +151,8 @@ class Player extends Helper {
     moveRight(){
         if (this.canMoveRight) {
             this.prevMoveDir = 'right'
-            this.image = "./img/run_right.png"
+            // if (keys.get("ArrowRight") > 10)
+                this.image.src = "./img/run_right.png"
             if (this.getRight() < canvas.width * 0.5) {
                 this.x += this.dx
                 // this.dx += 1
@@ -166,11 +167,11 @@ class Player extends Helper {
         this.canMoveRight = true
         this.canMoveUp = true
         this.canMoveDown = true
+        
         let crop = {
             bottom: 20,
             right: 20
         }
-        
         
         platforms.forEach(platform => {
             if (this.getBottom() > platform.getTop() && this.getTop() < platform.getBottom()) {
@@ -197,35 +198,32 @@ class Player extends Helper {
     }
 
 
+    image = new Image();
+    
     draw(){
         this.count++
-        let image = new Image();
-        // console.log(`${this.count} + ${this.image}`)
-        image.src = this.image
+        // this.image = "./img/stand_left.png"
         let size = {
             w: 794,
             h: 1123
         }
-        ctx.drawImage(image, Math.floor(this.frameX) * size.w, (Math.floor(this.frameY) * size.h), (size.w - 50), size.h, this.x, this.y, this.w, this.h)
+        // console.log(this.image.src)
+        ctx.drawImage(this.image, Math.floor(this.frameX) * size.w, (Math.floor(this.frameY) * size.h), (size.w - 50), size.h, this.x, this.y, this.w, this.h)
         // ctx.fillStyle = 'red'
         // ctx.fillRect(this.x, this.y, this.w, this.h)
     }
     
     keyPress(){
         if (this.prevMoveDir === 'left'){
-            this.image = "./img/stand_left.png"
+            this.image.src = "./img/stand_left.png"
         } else if (this.prevMoveDir === 'right'){
-            this.image = "./img/stand_right.png"
+            this.image.src = "./img/stand_right.png"
         }
         
-        keyPressed.forEach((_, key) => {
-            switch (key) {
-                case "ArrowUp": ArrowUp(); break
-                case "ArrowLeft": ArrowLeft(); break
-                case "ArrowRight": ArrowRight(); break
-            }
-        });
-        
+        console.log(keys)
+        if (keys.has("ArrowUp")) ArrowUp();
+        if (keys.has("ArrowLeft")) ArrowLeft();
+        if (keys.has("ArrowRight")) ArrowRight();
     }
     
     loopSprite(){
@@ -270,14 +268,14 @@ const player = new Player(20, 20, 150, 150, 10, 10);
 const platforms = []
 
 setInterval(function(){
-    //code goes here that will be run every 5 seconds.    
-    console.log()
-}, 1000);
+    // code goes here that will be run every 5 seconds.    
+}, 1);
 
 createMap()
 function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
     player.onStep()
     platforms.forEach(platform => platform.onStep())
 }
